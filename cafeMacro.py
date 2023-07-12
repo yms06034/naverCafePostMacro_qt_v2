@@ -27,13 +27,14 @@ class MainWindow(QMainWindow):
         window_ico = resource_path('favicon.ico')
         self.setWindowIcon(QIcon(window_ico))
 
-        # main_ui.input_id.setText("itthere2")
-        # main_ui.input_pwd.setText("naver1!2@L")
+        main_ui.input_id.setText("itthere2")
+        main_ui.input_pwd.setText("naver1!2@L")
 
         self.selected_category_name = []
         self.selected_category_href = []
 
         main_ui.btn_login.clicked.connect(self.btn_loginClicked)
+        # main_ui.btn_login.clicked.connect(self.test)
         main_ui.btn_getCate.clicked.connect(self.brn_getCateClicked)
         main_ui.btn_start.clicked.connect(self.btn_startClicked)
         main_ui.btn_add.clicked.connect(self.btn_addClicked)
@@ -43,6 +44,9 @@ class MainWindow(QMainWindow):
         main_ui.btn_delete_image_1.clicked.connect(self.btn_delete_image_1Clicked)
         main_ui.btn_delete_image_2.clicked.connect(self.btn_delete_image_2Clicked)
 
+    def test(self):
+        for i in range(0,4):
+            main_ui.post_urls.append('str')
 
     def btn_get_image_1Clicked(self):
         image_path = QFileDialog.getOpenFileName(self)      
@@ -101,6 +105,10 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, 'Cafe Macro', '아이디와 비밀번호를 입력해주세요')
             return 
                 
+        main_ui.selected.clear()
+        main_ui.cafe_list.clear()
+        main_ui.category_list.clear()
+        
         api.naverLogin(id, pwd, self.browser)
         if self.browser.current_url == 'https://nid.naver.com/nidlogin.login':
             self.browser.close()
@@ -110,9 +118,7 @@ class MainWindow(QMainWindow):
 
         self.cafe_hrefs, self.cafe_name = api.checkSubscriptionCafe(self.browser)
         
-        main_ui.cafe_list.clear()
         main_ui.cafe_list.addItems(self.cafe_name)
-        main_ui.category_list.clear()
 
     def brn_getCateClicked(self):
         if self.browser is None:
@@ -159,6 +165,7 @@ class MainWindow(QMainWindow):
             self.url_list = []
 
         self.post_urls = api.CafePostWriting(self.browser, main_ui.post_title.text(), self.selected_category_href, self.comments, PATH_IMG, tag_list, self.url_list)
+
         for i in self.post_urls:
             main_ui.post_urls.append(i)
 

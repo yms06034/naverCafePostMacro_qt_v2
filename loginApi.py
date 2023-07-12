@@ -158,29 +158,41 @@ def CafeCategoryGet(browser, cafe_url):
     
     return final_hrefs_true, cafe_name_true
 
+
+
 def CafePostWriting(browser, TITLE, cafe_info_urls, comments, PATH_IMG, tag_list, url_list):
     post_urls = []
     pyperclip.copy(TITLE)
+
     for i in range(len(cafe_info_urls)):
         browser.switch_to.window(browser.window_handles[0])
-        browser.get(cafe_info_urls[i])
+        browser.get(cafe_info_urls[i])        
         time.sleep(2)
+
         browser.switch_to.frame("cafe_main")
+
         try:
             find_id('writeFormBtn', browser).click()
             time.sleep(2)
+
             browser.switch_to.window(browser.window_handles[1])
             time.sleep(1)
+
             title_area = find_className('textarea_input', browser)
+
             title_area.send_keys(TITLE)
             time.sleep(1.5)
+
             editor_id = browser.find_elements(By.TAG_NAME, 'iframe')[-1]
+
             browser.switch_to.frame(editor_id)
             browser.find_element(By.TAG_NAME, 'body').send_keys(comments)
             browser.find_element(By.TAG_NAME, 'body').send_keys("\n")
             time.sleep(1.5)
+
             browser.switch_to.window(browser.window_handles[1])
             time.sleep(5)
+
             # URL AREA
             if not url_list:
                 pass
@@ -189,31 +201,47 @@ def CafePostWriting(browser, TITLE, cafe_info_urls, comments, PATH_IMG, tag_list
                     for url in url_list:
                         link_btn = find_className('se-link-toolbar-button' , browser)
                         link_btn.click()
+
                         time.sleep(1)
+
                         url_input = find_className('se-custom-layer-link-input' , browser)
+
                         pyperclip.copy(url)
                         url_input.send_keys(Keys.CONTROL, "v")
                         url_input.send_keys("\n")
+
                         editor_id = browser.find_elements(By.TAG_NAME, 'iframe')[-1]
+
                         browser.switch_to.frame(editor_id)
                         browser.find_element(By.TAG_NAME, 'body').send_keys("\n")
                         time.sleep(1.5)
+
                         browser.switch_to.window(browser.window_handles[1])
+
                 else:
                     link_btn = find_className('se-link-toolbar-button' , browser)
                     link_btn.click()
+
                     time.sleep(1)
+
                     url_input = find_className('se-custom-layer-link-input' , browser)
+
                     pyperclip.copy(url_list[0])
                     url_input.send_keys(Keys.CONTROL, "v")
                     url_input.send_keys("\n")
+
                     editor_id = browser.find_elements(By.TAG_NAME, 'iframe')[-1]
+
                     browser.switch_to.frame(editor_id)
                     browser.find_element(By.TAG_NAME, 'body').send_keys("\n")
                     time.sleep(1.5)
+
                     browser.switch_to.window(browser.window_handles[1])
+
+
             # IAMGE PATH AREA
             img_btn = find_className('se-image-toolbar-button', browser)
+
             if not PATH_IMG:
                 pass
             else:
@@ -221,53 +249,68 @@ def CafePostWriting(browser, TITLE, cafe_info_urls, comments, PATH_IMG, tag_list
                     for pi in PATH_IMG:
                         img_btn.click()
                         time.sleep(1)
+
                         pyperclip.copy(pi)
+
                         pyautogui.hotkey('ctrl', 'v')
                         pyautogui.hotkey('enter')
+
                         time.sleep(2)
                 else:
                     img_btn.click()
                     time.sleep(1)
+
                     pyperclip.copy(PATH_IMG[0])
+
                     pyautogui.hotkey('ctrl', 'v')
                     pyautogui.hotkey('enter')
+
             time.sleep(2)
+
             # TAG AREA
             tag_area = find_className('tag_input', browser)
             tag_area.send_keys('\n')
+
             if not tag_list:
                 pass
             else:
                 if len(tag_list) > 1:
                     for tag in tag_list:
-                        tag_area.click()
+                        # tag_area.click()
+
                         pyperclip.copy(tag)
+
                         tag_area.send_keys(Keys.CONTROL, "v")
                         tag_area.send_keys("\n")
                         time.sleep(1)
                 else:
-                    pyperclip.copy(tag[0])
+                    pyperclip.copy(tag_list[0])
+
                     tag_area.send_keys(Keys.CONTROL, "v")
                     tag_area.send_keys("\n")
+
             time.sleep(2)
+
             find_css('div.tool_area> a.BaseButton', browser).click()
+
             time.sleep(9)
+
             post_urls.append(browser.current_url)
+
             time.sleep(1)
+
         except Exception as ex:
             print(ex)
             print("글을 적을 수 없는 게시판이거나 등급이 낮아 작성할 수 없는 게시판입니다.")
             print("다른 게시판을 선택해주시거나 여러 게시판을 선택 하셨다면 다른 게시판으로 넘어갑니다.")
             pass
-        
+
         browser.close()
 
     browser.quit()
-
+    
     dt = datetime.now().strftime("%Y-%m-%d_%H%M")
-
     df = pd.DataFrame({'게시글 작성 URL' : post_urls})
-
     df.to_excel(f'카페게시글 ULR_{dt}.xlsx', index=False)
-
+    
     return post_urls
