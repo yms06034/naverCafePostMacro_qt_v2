@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         main_ui.setupUi(self)     
         self.show()
-        self.setWindowTitle("Cafe Macro")
+        self.setWindowTitle("Mirae Makers 네이버 카페 게시글 매크로")
         self.browser = None
         self.PATH_IMG1 = None
         self.PATH_IMG2 = None
@@ -27,8 +27,8 @@ class MainWindow(QMainWindow):
         window_ico = resource_path('favicon.ico')
         self.setWindowIcon(QIcon(window_ico))
 
-        main_ui.input_id.setText("itthere2")
-        main_ui.input_pwd.setText("naver1!2@L")
+        # main_ui.input_id.setText("itthere2")
+        # main_ui.input_pwd.setText("naver1!2@L")
 
         self.selected_category_name = []
         self.selected_category_href = []
